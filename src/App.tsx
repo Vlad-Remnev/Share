@@ -1,26 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useEffect, useState} from 'react';
 import './App.css';
+import {Button} from "./components/Button";
+import {v1} from "uuid";
+
+interface IGet {
+    userId: number
+    id: number
+    title: string
+    body: string
+}
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+    const [get, setGet] = useState<IGet[]>([])
+
+    const getRequestHandler = () => {
+        setGet([])
+    }
+
+    useEffect(() => {
+        fetch('https://jsonplaceholder.typicode.com/posts')
+            .then(response => response.json())
+            .then(json => setGet(json))
+    }, [])
+
+    return (
+        <div className="App">
+            <Button nickName={'Clean page'} callback={getRequestHandler}/>
+            <p></p>
+            {get.map(el => {
+                return (
+                    <ul>
+                        <li key={v1()}>
+                            <span>{el.id} - </span>
+                            <span>{el.title} - </span>
+                            <span>{el.body}</span>
+                        </li>
+                    </ul>
+                )
+            })}
+        </div>
+    );
 }
 
 export default App;
